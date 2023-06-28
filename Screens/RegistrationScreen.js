@@ -46,11 +46,11 @@ export const RegistrationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={kayBoardHide}>
-        <ImageBackground
-          style={styles.imageBg}
-          source={require("../Screens/images/photo-bg.jpg")}
-        >
+      <ImageBackground
+        style={styles.imageBg}
+        source={require("../Screens/images/photo-bg.jpg")}
+      >
+        <TouchableWithoutFeedback onPress={kayBoardHide}>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.keyboardAvoidingContainer}
@@ -58,8 +58,8 @@ export const RegistrationScreen = () => {
             <View
               style={{
                 ...styles.bgForm,
-                bottom: isShowBtn ? 0 : 120,
-                paddingBottom: isShowBtn ? 0 : 0,
+                // bottom: isShowBtn ? 0 : 120,
+                // paddingBottom: isShowBtn ? 0 : 0,
               }}
             >
               <View style={styles.form}>
@@ -121,11 +121,11 @@ export const RegistrationScreen = () => {
                   onPress={() => navigation.navigate("Login")}
                   style={{
                     color: "#1B4371",
-                    fontFamily: "Roboto-Regular",
+                    fontFamily: "Roboto-regular",
                     fontSize: 16,
                     marginBottom: 45,
                     marginTop: 16,
-                    marginLeft: 50,
+                    marginLeft: 100,
                   }}
                 >
                   Вже є акаунт? Увійти
@@ -133,8 +133,8 @@ export const RegistrationScreen = () => {
               </View>
             </View>
           </KeyboardAvoidingView>
-        </ImageBackground>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </ImageBackground>
     </View>
   );
 };
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     ...Platform.select({
       ios: { justifyContent: "center" },
-      android: { justifyContent: "flex-end" },
+      android: { justifyContent: "center" },
     }),
   },
 
@@ -201,7 +201,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
-    bottom: -60,
+    ...Platform.select({
+      ios: { bottom: -170 },
+      android: { bottom: -140 },
+    }),
   },
   mgFoto: {
     bottom: 60,

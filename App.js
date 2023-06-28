@@ -4,7 +4,7 @@ import { useState } from "react";
 import { RegistrationScreen } from "./Screens/RegistrationScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen } from "./Screens/LoginScreen";
+// import { LoginScreen } from "./Screens/LoginScreen";
 
 import {
   StyleSheet,
@@ -60,7 +60,7 @@ export default App = () => {
             name="Registration"
             component={RegistrationScreen}
           />
-          <MainStack.Screen name="Login" component={LoginScreen} />
+          {/* <MainStack.Screen name="Login" component={LoginScreen} /> */}
         </MainStack.Navigator>
       </View>
     </NavigationContainer>
