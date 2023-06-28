@@ -4,21 +4,9 @@ import { useState } from "react";
 import { RegistrationScreen } from "./Screens/RegistrationScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-// import { LoginScreen } from "./Screens/LoginScreen";
+import { LoginScreen } from "./Screens/LoginScreen";
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Platform, Keyboard } from "react-native";
 
 const initialState = {
   login: "",
@@ -60,7 +48,7 @@ export default App = () => {
             name="Registration"
             component={RegistrationScreen}
           />
-          {/* <MainStack.Screen name="Login" component={LoginScreen} /> */}
+          <MainStack.Screen name="Login" component={LoginScreen} />
         </MainStack.Navigator>
       </View>
     </NavigationContainer>
