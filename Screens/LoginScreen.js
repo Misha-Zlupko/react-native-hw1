@@ -109,7 +109,7 @@ export const LoginScreen = () => {
                   onPress={() => navigation.navigate("Registration")}
                   style={{
                     color: "#1B4371",
-                    fontFamily: "Roboto-Regular",
+                    fontFamily: "Roboto-regular",
                     fontSize: 16,
                     marginBottom: 45,
                     marginTop: 16,
