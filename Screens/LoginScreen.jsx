@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  Button,
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
@@ -22,22 +23,12 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation, route }) => {
+  // const { key } = route.params;
   const [state, setstate] = useState(initialState);
-  const [isShowBtn, setIsShowBtn] = useState(true);
+  const [isShowBtn, setIsShowBtn] = useState(false);
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-regular": require("../fonts/Roboto-Regular.ttf"),
-    "Roboto-medium": require("../fonts/Roboto-Medium.ttf"),
-    "Roboto-bold": require("../fonts/Roboto-Bold.ttf"),
-  });
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  // useEffect(() => {}, []);
-
-  const kayBoardHide = () => {
+  const kayBoardHide = ({ navigation }) => {
     setIsShowBtn(true);
     Keyboard.dismiss();
     console.log(state);
@@ -56,8 +47,8 @@ export const LoginScreen = () => {
             <View
               style={{
                 ...styles.bgForm,
-                bottom: isShowBtn ? 0 : 50,
-                paddingBottom: isShowBtn ? 0 : 0,
+                bottom: isShowBtn ? -120 : -140,
+                // paddingBottom: isShowBtn ? 0 : 0,
               }}
             >
               <View style={styles.form}>
@@ -103,17 +94,22 @@ export const LoginScreen = () => {
                   style={styles.btnReg}
                   onPress={kayBoardHide}
                 >
-                  <Text style={styles.textBtn}>Зареєстуватися</Text>
+                  <Text
+                    style={styles.textBtn}
+                    onPress={() => navigation.navigate("PostScreen")}
+                  >
+                    Увійти
+                  </Text>
                 </TouchableOpacity>
                 <Text
                   onPress={() => navigation.navigate("Registration")}
                   style={{
                     color: "#1B4371",
-                    fontFamily: "Roboto-Regular",
+                    fontFamily: "Roboto-regular",
                     fontSize: 16,
-                    marginBottom: 45,
                     marginTop: 16,
                     marginLeft: 50,
+                    // marginBottom: 145,
                   }}
                 >
                   Немає акаунту? Зареєструватися
@@ -136,7 +132,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     ...Platform.select({
       ios: { justifyContent: "center" },
-      android: { justifyContent: "flex-end" },
+      android: { justifyContent: "center" },
     }),
   },
 
@@ -164,7 +160,7 @@ const styles = StyleSheet.create({
   form: {
     marginHorizontal: 16,
     paddingTop: 92,
-    paddingBottom: 82,
+    paddingBottom: 152,
   },
   inputContainer: {
     marginTop: 16,
@@ -188,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
-    bottom: -60,
+    bottom: -160,
   },
   mgFoto: {
     bottom: 60,

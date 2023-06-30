@@ -23,20 +23,10 @@ const initialState = {
   password: "",
 };
 
-export const RegistrationScreen = () => {
+export const RegistrationScreen = ({ navigation, route }) => {
   const [state, setstate] = useState(initialState);
-  const [isShowBtn, setIsShowBtn] = useState(false);
-
-  const [fontsLoaded] = useFonts({
-    "Roboto-regular": require("../fonts/Roboto-Regular.ttf"),
-    "Roboto-medium": require("../fonts/Roboto-Medium.ttf"),
-    "Roboto-bold": require("../fonts/Roboto-Bold.ttf"),
-  });
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  // useEffect(() => {}, []);
+  const [isShowBtn, setIsShowBtn] = useState(true);
+  // const { key } = route.params;
 
   const kayBoardHide = () => {
     setIsShowBtn(true);
@@ -58,8 +48,8 @@ export const RegistrationScreen = () => {
             <View
               style={{
                 ...styles.bgForm,
-                bottom: isShowBtn ? 0 : 120,
-                paddingBottom: isShowBtn ? 0 : 0,
+                bottom: isShowBtn ? -130 : -70,
+                // paddingBottom: isShowBtn ? 0 : 0,
               }}
             >
               <View style={styles.form}>
@@ -115,17 +105,21 @@ export const RegistrationScreen = () => {
                   style={styles.btnReg}
                   onPress={kayBoardHide}
                 >
-                  <Text style={styles.textBtn}>Зареєстуватися</Text>
+                  <Text
+                    style={styles.textBtn}
+                    onPress={() => navigation.navigate("PostScreen")}
+                  >
+                    Зареєстуватися
+                  </Text>
                 </TouchableOpacity>
                 <Text
                   onPress={() => navigation.navigate("Login")}
                   style={{
                     color: "#1B4371",
-                    fontFamily: "Roboto-Regular",
+                    fontFamily: "Roboto-regular",
                     fontSize: 16,
-                    marginBottom: 45,
                     marginTop: 16,
-                    marginLeft: 50,
+                    marginLeft: 100,
                   }}
                 >
                   Вже є акаунт? Увійти
@@ -149,7 +143,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     ...Platform.select({
       ios: { justifyContent: "center" },
-      android: { justifyContent: "flex-end" },
+      android: { justifyContent: "center" },
     }),
   },
 
@@ -201,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
-    bottom: -60,
+    bottom: -100,
   },
   mgFoto: {
     bottom: 60,
