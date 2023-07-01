@@ -10,6 +10,7 @@ import { PostScreen } from "./Screens/PostsScreen";
 import { StyleSheet, View } from "react-native";
 import { ProfileScreen } from "./Screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MapScreen } from "./Screens/MapScreen";
 
 const MainStack = createStackNavigator();
 const AuthStack = createBottomTabNavigator();
@@ -33,6 +34,11 @@ const useRoute = (isAuth) => {
   }
   return (
     <MainStack.Navigator>
+      <MainStack.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{ headerShown: false }}
+      />
       <MainStack.Screen
         name="CreatePostsScreen"
         component={CreatePostsScreen}

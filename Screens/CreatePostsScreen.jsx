@@ -1,8 +1,7 @@
 import * as Font from "expo-font";
-import { useFonts } from "expo-font";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -18,8 +17,43 @@ import {
   Image,
 } from "react-native";
 import { AntDesign, MaterialIcons, Feather } from "@expo/vector-icons";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 
 export const CreatePostsScreen = ({ navigation }) => {
+  const [camera, setCamera] = useState(null);
+  const [foto, setFoto] = useState(null);
+  const isFocused = useIsFocused();
+  const [location, setLocation] = useState(null);
+
+  const takePhoto = async () => {
+    const foto = await camera.takePictureAsync();
+    setFoto(foto.uri);
+  };
+
+  const sendFoto = () => {
+    navigation.navigate("PostScreen", { foto, location });
+  };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setLocation(coords);
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   setFoto(null);
+  // }, [isFocused]);
   return (
     <View style={styles.container}>
       <View style={styles.wrapperPub}>
@@ -47,11 +81,32 @@ export const CreatePostsScreen = ({ navigation }) => {
           <View>
             <Image
               style={styles.imgFoto}
-              source={require("../Screens/images/Content-Block.png")}
+              source={
+                // { uri: foto }
+                foto
+                  ? { uri: foto }
+                  : require("../Screens/images/Content-Block.png")
+              }
             />
             <View style={styles.takePhotoOut}>
               <MaterialIcons name="camera-alt" size={32} color="#BDBDBD" />
             </View>
+            {!foto && (
+              <Camera style={styles.camera} ref={setCamera}>
+                <TouchableOpacity
+                  style={styles.cnapContainer}
+                  onPress={takePhoto}
+                >
+                  <View style={styles.takePhoto}>
+                    <MaterialIcons
+                      name="camera-alt"
+                      size={32}
+                      color="#BDBDBD"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </Camera>
+            )}
             <Text style={{ color: "#BDBDBD" }}>Завантажте фото</Text>
           </View>
           <View style={styles.form}>
@@ -81,14 +136,9 @@ export const CreatePostsScreen = ({ navigation }) => {
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.btnReg}
-              // onPress={kayBoardHide}
+              onPress={sendFoto}
             >
-              <Text
-                style={styles.textBtn}
-                onPress={() => navigation.navigate("PostScreen")}
-              >
-                Опубліковати
-              </Text>
+              <Text style={styles.textBtn}>Опубліковати</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -107,6 +157,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  camera: {
+    width: 343,
+    height: 240,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    borderRadius: 10,
+  },
+  cnapContainer: { width: 70, height: 70, borderColor: "red", color: "white" },
   textPub: {
     fontFamily: "Roboto-bold",
     fontSize: 17,
@@ -159,7 +218,7 @@ const styles = StyleSheet.create({
   },
   takePhotoOut: {
     marginBottom: 20,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     height: 60,
     width: 60,
     justifyContent: "center",
@@ -168,9 +227,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 140,
     top: 90,
+    backgroundColor: "#FFFFFF4D",
+  },
+  takePhoto: {
+    marginBottom: 20,
+    backgroundColor: "#FFFFFF4D",
+    height: 60,
+    width: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    position: "absolute",
+    // left: 140,
+    // top: 90,
   },
   imgFoto: {
+    width: 343,
+    height: 240,
     position: "relative",
+    borderRadius: 10,
   },
   inputText: {
     fontFamily: "Roboto-regular",

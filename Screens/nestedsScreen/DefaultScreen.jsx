@@ -17,7 +17,7 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 
-export const PostScreen = ({ navigation, route }) => {
+export const DefaultPostScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     if (route.params) {
@@ -48,51 +48,20 @@ export const PostScreen = ({ navigation, route }) => {
         <View style={styles.wrapperProf}>
           <Image
             style={styles.imgFoto}
-            source={require("../Screens/images/Mini-foto.png")}
+            source={require("../../Screens/images/Mini-foto.png")}
           />
           <View style={styles.wrapperInfo}>
             <Text style={styles.nameProf}>Natali Romanova</Text>
             <Text style={styles.emailProf}>email@example.com</Text>
           </View>
         </View>
-        {posts && (
+        {!posts && (
           <View style={styles.wrapperPublic}>
             <FlatList
               data={posts}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
-                <View>
-                  <Image
-                    source={{ uri: item.foto }}
-                    style={styles.imgPubFoto}
-                  />
-                  <Text style={styles.namePub}>Ліс</Text>
-                  <View style={styles.wrapperBtnPost}>
-                    <TouchableOpacity
-                      style={styles.commentsInfo}
-                      onPress={() => navigation.navigate("Comments")}
-                    >
-                      <FontAwesome5 name="comment" size={24} color="#BDBDBD" />
-                      <Text style={styles.comentText}>0</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.locationInfo}
-                      onPress={() => navigation.navigate("MapScreen")}
-                    >
-                      <Feather name="map-pin" size={24} color="#BDBDBD" />
-                      <MapView
-                        style={styles.mapStyle}
-                        region={{
-                          // ...location,
-                          latitudeDelta: 0.0922,
-                          longitudeDelta: 0.0421,
-                        }}
-                      />
-                      <Text style={styles.loctionText}>Location</Text>
-                      <View style={styles.underline}></View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                <Image source={{ uri: item.foto }} style={styles.imgPubFoto} />
               )}
             />
 
@@ -100,8 +69,8 @@ export const PostScreen = ({ navigation, route }) => {
             style={styles.imgFoto}
             source={require("../Screens/images/Rectangle-23.png")}
           /> */}
-            {/* <Text style={styles.namePub}>Ліс</Text> */}
-            {/* <View style={styles.wrapperBtnPost}>
+            <Text style={styles.namePub}>Ліс</Text>
+            <View style={styles.wrapperBtnPost}>
               <TouchableOpacity
                 style={styles.commentsInfo}
                 onPress={() => navigation.navigate("Comments")}
@@ -122,10 +91,10 @@ export const PostScreen = ({ navigation, route }) => {
                     longitudeDelta: 0.0421,
                   }}
                 />
-                <Text style={styles.loctionText}>Location</Text>
+                {/* <Text style={styles.loctionText}>Location:</Text> */}
                 <View style={styles.underline}></View>
               </TouchableOpacity>
-            </View> */}
+            </View>
           </View>
         )}
       </View>
@@ -134,7 +103,7 @@ export const PostScreen = ({ navigation, route }) => {
         <View style={styles.wrapperBtns}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("PostsScreen");
+              navigation.navigate("DefaultPost");
             }}
           >
             <Ionicons name="ios-grid-outline" size={24} color="black" />
@@ -260,25 +229,3 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
-// import { createStackNavigator } from "@react-navigation/stack";
-// import { MapScreen } from "./MapScreen";
-// import { DefaultPostScreen } from "./nestedsScreen/DefaultScreen";
-
-// const NestedScreen = createStackNavigator();
-
-// export const PostScreen = ({ navigation, route }) => {
-//   return (
-//     <NestedScreen.Navigator>
-//       <NestedScreen.Screen
-//         name="DefaultPost"
-//         component={DefaultPostScreen}
-//         options={{ headerShown: false }}
-//       />
-//       <NestedScreen.Screen
-//         name="MapScreen"
-//         component={MapScreen}
-//         options={{ headerShown: false }}
-//       />
-//     </NestedScreen.Navigator>
-//   );
-// };
