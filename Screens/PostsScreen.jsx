@@ -16,28 +16,49 @@ import { Feather, Ionicons, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
+import { authSignOutUser } from "./redux/auth/authOperations";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { authStateChangesUsers } from "./redux/auth/authOperations";
+import { db } from "../firebace/config";
+import { collection, getDocs } from "firebase/firestore";
+import { CommentsScreen } from "./CommentsScreen";
 
 export const PostScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const authStateChange = useSelector((state) => state.authStateChange);
   const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    if (route.params) {
-      // setPosts((prevState) => [...prevState, route.params]);
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
-  console.log(posts);
 
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
+  const getAllPosts = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      const postsData = querySnapshot.docs.map((doc) => doc.data());
+      setPosts(postsData);
+    } catch (error) {
+      console.log("Error getting posts:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  useEffect(() => {
+    if (authStateChange) {
+      signOut();
+    }
+  }, [authStateChange]);
+  console.log(posts);
   return (
     <View style={styles.container}>
       <View style={styles.wrapperPub}>
         <View style={styles.wrapperLogPub}>
           <Text style={styles.textPub}>Публікації</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Login");
-            }}
-            style={styles.exitBtn}
-          >
+          <TouchableOpacity onPress={signOut} style={styles.exitBtn}>
             <Feather name="log-out" size={24} color="#bdbdbd" />
           </TouchableOpacity>
         </View>
@@ -63,30 +84,40 @@ export const PostScreen = ({ navigation, route }) => {
               renderItem={({ item }) => (
                 <View>
                   <Image
-                    source={{ uri: item.foto }}
+                    source={{ uri: item.photo }}
                     style={styles.imgPubFoto}
                   />
-                  <Text style={styles.namePub}>Ліс</Text>
+                  <Text style={styles.namePub}>
+                    {posts.map((i) => i.coments)}
+                  </Text>
                   <View style={styles.wrapperBtnPost}>
                     <TouchableOpacity
                       style={styles.commentsInfo}
-                      onPress={() => navigation.navigate("Comments")}
+                      onPress={() =>
+                        navigation.navigate("CommentsScreen", {
+                          postId: item.userId,
+                        })
+                      }
                     >
                       <FontAwesome5 name="comment" size={24} color="#BDBDBD" />
                       <Text style={styles.comentText}>0</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.locationInfo}
-                      onPress={() => navigation.navigate("MapScreen")}
+                      onPress={() =>
+                        navigation.navigate("MapScreen", {
+                          location: item.location,
+                        })
+                      }
                     >
                       <Feather name="map-pin" size={24} color="#BDBDBD" />
                       <MapView
                         style={styles.mapStyle}
-                        region={{
-                          // ...location,
-                          latitudeDelta: 0.0922,
-                          longitudeDelta: 0.0421,
-                        }}
+                        // region={{
+                        //   // ...location,
+                        //   latitudeDelta: 0.0922,
+                        //   longitudeDelta: 0.0421,
+                        // }}
                       />
                       <Text style={styles.loctionText}>Location</Text>
                       <View style={styles.underline}></View>
@@ -176,7 +207,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginLeft: "auto",
   },
-  wrapperPub: { paddingTop: 27 },
+  wrapperPub: { paddingTop: 45 },
   line: {
     height: 1,
     backgroundColor: "grey",

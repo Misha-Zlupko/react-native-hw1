@@ -16,6 +16,8 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
+import { authSignUpUser } from "./redux/auth/authOperations";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   login: "",
@@ -26,17 +28,22 @@ const initialState = {
 export const RegistrationScreen = ({ navigation, route }) => {
   const [state, setstate] = useState(initialState);
   const [isShowBtn, setIsShowBtn] = useState(true);
-  // const { key } = route.params;
 
-  const kayBoardHide = () => {
+  const dispatch = useDispatch();
+
+  const heandleSubbmit = () => {
+    Keyboard.dismiss();
+    dispatch(authSignUpUser(state));
+  };
+
+  const handleBackdropPress = () => {
     setIsShowBtn(true);
     Keyboard.dismiss();
-    console.log(state);
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={kayBoardHide}>
+    <TouchableWithoutFeedback onPress={handleBackdropPress}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.imageBg}
           source={require("../Screens/images/photo-bg.jpg")}
@@ -48,7 +55,7 @@ export const RegistrationScreen = ({ navigation, route }) => {
             <View
               style={{
                 ...styles.bgForm,
-                bottom: isShowBtn ? -130 : -70,
+                bottom: isShowBtn ? -130 : -80,
                 // paddingBottom: isShowBtn ? 0 : 0,
               }}
             >
@@ -74,6 +81,7 @@ export const RegistrationScreen = ({ navigation, route }) => {
                     onChangeText={(value) =>
                       setstate((prevState) => ({ ...prevState, login: value }))
                     }
+                    value={state.login}
                   />
                 </View>
                 <View style={styles.inputContainer}>
@@ -84,6 +92,7 @@ export const RegistrationScreen = ({ navigation, route }) => {
                     onChangeText={(value) =>
                       setstate((prevState) => ({ ...prevState, email: value }))
                     }
+                    value={state.email}
                   />
                 </View>
                 <View style={styles.inputContainer}>
@@ -98,16 +107,17 @@ export const RegistrationScreen = ({ navigation, route }) => {
                         password: value,
                       }))
                     }
+                    value={state.password}
                   />
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.btnReg}
-                  onPress={kayBoardHide}
+                  onPress={heandleSubbmit}
                 >
                   <Text
                     style={styles.textBtn}
-                    onPress={() => navigation.navigate("PostScreen")}
+                    // onPress={() => navigation.navigate("PostScreen")}
                   >
                     Зареєстуватися
                   </Text>
@@ -128,8 +138,8 @@ export const RegistrationScreen = ({ navigation, route }) => {
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
-      </TouchableWithoutFeedback>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

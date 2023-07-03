@@ -2,7 +2,7 @@ import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-
+import { authSignInUser } from "./redux/auth/authOperations";
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   email: "",
@@ -28,14 +29,23 @@ export const LoginScreen = ({ navigation, route }) => {
   const [state, setstate] = useState(initialState);
   const [isShowBtn, setIsShowBtn] = useState(false);
 
-  const kayBoardHide = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const heandleSubbmit = () => {
     setIsShowBtn(true);
     Keyboard.dismiss();
-    console.log(state);
+    dispatch(authSignInUser(state));
+    setstate(initialState);
   };
+
+  const keyboardHide = () => {
+    setIsShowBtn(true);
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={kayBoardHide}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.imageBg}
           source={require("../Screens/images/photo-bg.jpg")}
@@ -92,11 +102,11 @@ export const LoginScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.btnReg}
-                  onPress={kayBoardHide}
+                  onPress={heandleSubbmit}
                 >
                   <Text
                     style={styles.textBtn}
-                    onPress={() => navigation.navigate("PostScreen")}
+                    // onPress={() => navigation.navigate("PostScreen")}
                   >
                     Увійти
                   </Text>
@@ -118,8 +128,8 @@ export const LoginScreen = ({ navigation, route }) => {
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
-      </TouchableWithoutFeedback>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({

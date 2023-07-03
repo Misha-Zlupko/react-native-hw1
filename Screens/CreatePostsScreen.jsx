@@ -19,12 +19,21 @@ import {
 import { AntDesign, MaterialIcons, Feather } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import { storage, db } from "../firebace/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useSelector } from "react-redux";
+import { collection, addDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 export const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [foto, setFoto] = useState(null);
+  const [coments, setComents] = useState("");
   const isFocused = useIsFocused();
   const [location, setLocation] = useState(null);
+
+  const userId = useSelector((state) => state.auth.userId);
+  const logIn = useSelector((state) => state.auth.logIn);
 
   const takePhoto = async () => {
     const foto = await camera.takePictureAsync();
@@ -32,9 +41,62 @@ export const CreatePostsScreen = ({ navigation }) => {
   };
 
   const sendFoto = () => {
-    navigation.navigate("PostScreen", { foto, location });
+    // uploadPhotoToServer();
+    uploadPotsToServer();
+    navigation.navigate("PostScreen");
+    // navigation.navigate("PostScreen", { foto, location });
   };
 
+  const uploadPotsToServer = async () => {
+    try {
+      const photo = await uploadPhotoToServer();
+      const docRef = await addDoc(collection(db, "posts"), {
+        photo,
+        coments,
+        location,
+        userId,
+        logIn,
+      });
+      console.log("Document added successfully:", docRef.id);
+    } catch (error) {
+      console.log("Error adding document:", error);
+    }
+  };
+  const uploadPhotoToServer = async () => {
+    try {
+      const response = await fetch(foto);
+      const file = await response.blob();
+      const uniquePostId = Date.now().toString();
+      const storageRef = ref(storage, `postImage/${uniquePostId}`);
+
+      await uploadBytes(storageRef, file);
+      console.log("Photo uploaded successfully!");
+
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL; // Return the download URL of the photo
+    } catch (error) {
+      console.log("Error uploading photo:", error);
+      return null; // Return null in case of error
+    }
+  };
+  // const uploadPhotoToServer = async () => {
+  //   try {
+  //     const response = await fetch(foto);
+  //     const file = await response.blob();
+  //     const uniquePostId = Date.now().toString();
+  //     const storageRef = ref(storage, `postImage/${uniquePostId}`);
+
+  //     await uploadBytes(storageRef, file);
+  //     console.log("Photo uploaded successfully!");
+
+  //     const downloadURL = await getDownloadURL(storageRef); // Исправленная строка
+  //     console.log(downloadURL);
+  //     // return downloadURL;
+  //     // navigation.navigate("PostScreen", { foto: downloadURL, location });
+  //   } catch (error) {
+  //     console.log("Error uploading photo:", error);
+  //   }
+  // };
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -51,9 +113,9 @@ export const CreatePostsScreen = ({ navigation }) => {
     })();
   }, []);
 
-  // useEffect(() => {
-  //   setFoto(null);
-  // }, [isFocused]);
+  useEffect(() => {
+    setFoto(null);
+  }, [isFocused]);
   return (
     <View style={styles.container}>
       <View style={styles.wrapperPub}>
@@ -115,6 +177,7 @@ export const CreatePostsScreen = ({ navigation }) => {
                 style={styles.inputText}
                 placeholder="Назва..."
                 keyboardType="default"
+                onChangeText={setComents}
               />
             </View>
             <View
@@ -175,7 +238,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  wrapperPub: { paddingTop: 27 },
+  wrapperPub: { paddingTop: 45 },
   btnReg: {
     backgroundColor: "#FF6C00",
     height: 51,

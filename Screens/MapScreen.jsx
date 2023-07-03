@@ -8,7 +8,10 @@ import {
 import MapView, { Marker } from "react-native-maps";
 import { AntDesign } from "@expo/vector-icons";
 
-export const MapScreen = ({ navigation }) => {
+export const MapScreen = ({ navigation, route }) => {
+  const latitude = route.params.location.latitude;
+  const longitude = route.params.location.longitude;
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -26,17 +29,14 @@ export const MapScreen = ({ navigation }) => {
       <MapView
         style={styles.mapStyle}
         region={{
-          latitude: 37.78825,
-          longitude: -122.4324,
+          latitude: latitude,
+          longitude: longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         mapType="standard"
       >
-        <Marker
-          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
-          title={"travel photo"}
-        />
+        <Marker coordinate={{ latitude, longitude }} title={"travel photo"} />
       </MapView>
     </View>
   );

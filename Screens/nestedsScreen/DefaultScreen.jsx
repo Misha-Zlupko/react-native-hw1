@@ -25,7 +25,6 @@ export const DefaultPostScreen = ({ navigation, route }) => {
       setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
-  console.log(posts);
 
   return (
     <View style={styles.container}>
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginLeft: "auto",
   },
-  wrapperPub: { paddingTop: 27 },
+  wrapperPub: { paddingTop: 45 },
   line: {
     height: 1,
     backgroundColor: "grey",
